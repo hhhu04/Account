@@ -38,29 +38,29 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
         http
                 .httpBasic().disable()
                 .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 토큰 기반 인증이므로 세션 역시 사용하지 않습니다.
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                .antMatchers("/user/testApi").permitAll()
                 .antMatchers("/user/join","/user/login").anonymous()
-                .antMatchers("/user/**").authenticated()
+                .antMatchers("/user/**","/account/**").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider),
                         UsernamePasswordAuthenticationFilter.class);
 
-        http.logout().logoutSuccessUrl("/");
-
     }
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.httpFirewall(defaultHttpFirewall());
-    }
 
-    @Bean
-    public HttpFirewall defaultHttpFirewall() {
-        return new DefaultHttpFirewall();
-    }
+//    @Override
+//    public void configure(WebSecurity web) throws Exception {
+//        web.httpFirewall(defaultHttpFirewall());
+//    }
+//
+//    @Bean
+//    public HttpFirewall defaultHttpFirewall() {
+//        return new DefaultHttpFirewall();
+//    }
 
 
 }

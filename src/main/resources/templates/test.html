@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <title>Title</title>
+</head>
+<body>
+<script>
+    $.ajax({
+        url:'http://localhost:8080/user/myAccount/test2@test',
+        type:'GET',
+        dataType : 'json',
+        contentType : 'application/json',
+        cache: false,
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader("token","eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MkB0ZXN0Iiwicm9sZXMiOiJST0xFX1VTRVIiLCJpYXQiOjE2Mzk3OTE2NDQsImV4cCI6MTYzOTc5MzQ0NH0.Dn6g_WLUL90uo03H-UqiBSY5iZs6CANF82MDiqKZNTg");
+        },
+        success : function(data) {
+            console.log(data);
+        },
+        error:function(data){
+            console.log(data);
+        }
+    });
+</script>
+</body>
+</html>

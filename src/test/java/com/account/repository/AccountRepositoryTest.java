@@ -17,7 +17,7 @@ class AccountRepositoryTest {
     @Test
     void create(){
         Account account = new Account();
-        account.setUserId(1L);
+        account.setUserId(2L);
         account.setPrice(5000);
         account.setNote("테스트");
         account.setCreatedAt(LocalDateTime.now());
@@ -25,5 +25,9 @@ class AccountRepositoryTest {
         accountRepository.save(account);
 
     }
+
+
+
+
 
 }

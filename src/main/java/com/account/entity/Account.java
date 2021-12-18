@@ -19,10 +19,25 @@ public class Account {
 
     private int price;
 
+    private String title;
+
     private String note;
 
     private LocalDateTime createdAt;
 
-    private int status;
+    private LocalDateTime updatedAt;
 
+    private int status;  // 1:일반, 0:삭제상태
+
+
+
+
+
+    ///////////////////
+
+    public Account setAccount(Account account) {
+        account.setStatus(1);
+        account.setCreatedAt(LocalDateTime.now());
+        return account;
+    }
 }

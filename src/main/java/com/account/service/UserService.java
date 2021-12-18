@@ -1,12 +1,15 @@
 package com.account.service;
 
 import com.account.dto.LoginDto;
+import com.account.entity.Account;
 import com.account.entity.User;
 import com.account.jwt.JwtTokenProvider;
 import com.account.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +23,7 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
-    public void join(User user) throws Exception{
+    public void join(User user) {
         user = user.setUser(user,passwordEncoder);
         userRepository.save(user);
     }
@@ -32,5 +35,10 @@ public class UserService {
     public String createToken(User user, LoginDto loginDto) {
         if(!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) throw new IllegalArgumentException();
         return tokenProvider.createToken(user.getEmail(),user.getRole());
+    }
+
+
+    public long getUserId(String email) {
+        return userRepository.findByEmail(email).get().getId();
     }
 }
