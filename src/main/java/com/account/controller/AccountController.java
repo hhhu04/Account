@@ -31,9 +31,7 @@ public class AccountController {
     @ResponseBody
     public int newAccount(@RequestBody Account account, @CookieValue(value = "token",required = false)Cookie cookie){
         try{
-            String token = cookie.getValue();
-            String email = tokenProvider.getUserPk(token);
-            long userId = userService.getUserId(email);
+            long userId = userService.userId(cookie);
             account.setUserId(userId);
             accountService.newAccount(account);
 
@@ -53,9 +51,7 @@ public class AccountController {
     @ResponseBody
     public int delete(@RequestBody Account account,@CookieValue(value = "token",required = false) Cookie cookie){
         try{
-            String token = cookie.getValue();
-            String email = tokenProvider.getUserPk(token);
-            long userId = userService.getUserId(email);
+            long userId = userService.userId(cookie);
             account = accountService.oneAccount(account);
             if(account.getUserId() == userId) {
 
@@ -92,9 +88,7 @@ public class AccountController {
     @ResponseBody
     public int back(@RequestBody Account account,@CookieValue(value = "token",required = false) Cookie cookie){
         try{
-            String token = cookie.getValue();
-            String email = tokenProvider.getUserPk(token);
-            long userId = userService.getUserId(email);
+            long userId = userService.userId(cookie);
             account = accountService.oneAccount(account);
             if(account.getUserId() == userId) {
                 accountService.delete(account);

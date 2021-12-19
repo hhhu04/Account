@@ -45,6 +45,8 @@ public class User implements UserDetails {
     }
 
 
+
+
     ////JWT관련
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -77,4 +79,6 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
 }

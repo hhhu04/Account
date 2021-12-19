@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
 import java.util.List;
 
 @Service
@@ -41,4 +42,17 @@ public class UserService {
     public long getUserId(String email) {
         return userRepository.findByEmail(email).get().getId();
     }
+
+    public long userId(Cookie cookie){
+        String token = cookie.getValue();
+        String email = tokenProvider.getUserPk(token);
+        return this.getUserId(email);
+    }
+
+    public String email2(Cookie cookie){
+        String token = cookie.getValue();
+        return tokenProvider.getUserPk(token);
+    }
+
+
 }
