@@ -51,14 +51,14 @@ public class UserController {
 
     }
 
-    //가입요청.
+    //가입요청.  -email,password
     @PostMapping("/join")
     @ResponseBody
     public int join(@RequestBody User user){
 
         try {
 
-//            if(!user.getEmail().matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$")) return 0;
+            if(!user.getEmail().matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$")) return 0;
             if(!userService.checkUser(user.getEmail())){
                 userService.join(user);
 
@@ -87,6 +87,7 @@ public class UserController {
             cookie.setMaxAge(30*60);
             response.addCookie(cookie);
 
+            System.out.println(token);
             return 1;
         }
         catch (IllegalArgumentException e){
@@ -106,8 +107,7 @@ public class UserController {
     public List<AccountDto> accounts(@PathVariable(value = "email") String email, @CookieValue(value = "token",required = false)Cookie cookie){
         List<AccountDto> list = new ArrayList<>();
         try {
-            String token = cookie.getValue();
-            String email2 = tokenProvider.getUserPk(token);
+            String email2 = userService.email2(cookie);
             if(!email.equals(email2)) throw new IllegalArgumentException();
 
             long userId = userService.getUserId(email);
@@ -125,8 +125,7 @@ public class UserController {
     public List<AccountDto> deletes(@PathVariable(value = "email") String email, @CookieValue(value = "token",required = false)Cookie cookie){
         List<AccountDto> list = new ArrayList<>();
         try{
-            String token = cookie.getValue();
-            String email2 = tokenProvider.getUserPk(token);
+            String email2 = userService.email2(cookie);
             if(!email.equals(email2)) throw new IllegalArgumentException();
 
             long userId = userService.getUserId(email);
@@ -144,8 +143,7 @@ public class UserController {
     public Account accountDetail(@PathVariable(value = "email") String email,@PathVariable(value = "id") long id,Account account,
                                  @CookieValue(value = "token",required = false)Cookie cookie){
         try {
-            String token = cookie.getValue();
-            String email2 = tokenProvider.getUserPk(token);
+            String email2 = userService.email2(cookie);
             if (!email.equals(email2)) throw new IllegalArgumentException();
 
             long userId = userService.getUserId(email);
@@ -160,7 +158,6 @@ public class UserController {
     }
 
 
-//test
 
 
 }
