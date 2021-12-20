@@ -43,8 +43,8 @@ public class AccountService {
         accountRepository.delete(account);
     }
 
-    public Account accountDetail(long id) {
-        return accountRepository.findById(id).get();
+    public Account accountDetail(long id,long userId) {
+        return accountRepository.findByIdAndUserId(id,userId);
     }
 
 
