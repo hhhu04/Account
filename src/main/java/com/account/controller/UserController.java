@@ -10,6 +10,7 @@ import com.account.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.security.auth.login.LoginException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -104,7 +105,8 @@ public class UserController {
 
     //내가 기록한 가계부 호출 _ 삭제상태 제외.   가계부 내역이 없다면 빈 list , 다른 email의 자료를 요청시 null 반환
     @GetMapping("/myAccount/{email}")
-    public List<AccountDto> accounts(@PathVariable(value = "email") String email, @CookieValue(value = "token",required = false)Cookie cookie){
+    public Map<Integer,List<AccountDto>> accounts(@PathVariable(name = "email") String email, @CookieValue(value = "token",required = false)Cookie cookie){
+        Map<Integer, List<AccountDto>> map = new HashMap<>();
         List<AccountDto> list = new ArrayList<>();
         try {
             String email2 = userService.email2(cookie);
@@ -112,17 +114,23 @@ public class UserController {
 
             long userId = userService.getUserId(email);
             list = accountService.myAccounts(userId);
+            map.put(1,list);
+        }
+        catch (IllegalArgumentException e){
+            e.printStackTrace();
+            map.put(-2,list);
         }
         catch (Exception e){
             e.printStackTrace();
-            return null;
+            map.put(-3,list);
         }
-        return list;
+        return map;
     }
 
     //내가 삭제한 목록
     @GetMapping("/myDelete/{email}")
-    public List<AccountDto> deletes(@PathVariable(value = "email") String email, @CookieValue(value = "token",required = false)Cookie cookie){
+    public Map<Integer,List<AccountDto>> deletes(@PathVariable(name = "email") String email, @CookieValue(value = "token",required = false)Cookie cookie){
+        Map<Integer, List<AccountDto>> map = new HashMap<>();
         List<AccountDto> list = new ArrayList<>();
         try{
             String email2 = userService.email2(cookie);
@@ -130,31 +138,43 @@ public class UserController {
 
             long userId = userService.getUserId(email);
             list = accountService.myDeletes(userId);
+            map.put(1,list);
+        }
+        catch (IllegalArgumentException e){
+            e.printStackTrace();
+            map.put(-2,list);
         }
         catch (Exception e){
             e.printStackTrace();
-            return null;
+            map.put(-3,list);
         }
-        return list;
+        return map;
     }
 
 
     @GetMapping("/myAccount/{email}/{id}")
-    public Account accountDetail(@PathVariable(value = "email") String email,@PathVariable(value = "id") long id,Account account,
+    public Map<Integer,Account> accountDetail(@PathVariable(name = "email") String email,@PathVariable(value = "id") long id,Account account,
                                  @CookieValue(value = "token",required = false)Cookie cookie){
+        Map<Integer, Account> map = new HashMap<>();
         try {
             String email2 = userService.email2(cookie);
             if (!email.equals(email2)) throw new IllegalArgumentException();
 
             long userId = userService.getUserId(email);
-            account = accountService.accountDetail(id);
-
-        }catch (Exception e ) {
-            e.printStackTrace();
-            return null;
+            account = accountService.accountDetail(id,userId);
+            if(account == null) throw new IllegalArgumentException();
+            map.put(1, account);
         }
+       catch (IllegalArgumentException e){
+                e.printStackTrace();
+                map.put(-2,account);
+            }
+        catch (Exception e){
+                e.printStackTrace();
+                map.put(-3,account);
+            }
 
-        return account;
+        return map;
     }
 
 
