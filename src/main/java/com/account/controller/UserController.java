@@ -88,7 +88,6 @@ public class UserController {
             cookie.setMaxAge(30*60);
             response.addCookie(cookie);
 
-            System.out.println(token);
             return 1;
         }
         catch (IllegalArgumentException e){
@@ -100,6 +99,21 @@ public class UserController {
             return -3;
         }
 
+    }
+
+    //로그아웃
+    @GetMapping("/logout")
+    public String logout(@CookieValue(value = "token",required = false)Cookie cookie, HttpServletResponse response){
+       try {
+           Cookie cookie1 = new Cookie("token", "");
+           cookie1.setMaxAge(0);
+           response.addCookie(cookie1);
+           return "<script>alert("+"로그아웃"+")</script>";
+
+       }catch (Exception e){
+           e.printStackTrace();
+       }
+        return "<script>alert("+"실패."+")</script>";
     }
 
 
@@ -115,10 +129,6 @@ public class UserController {
             long userId = userService.getUserId(email);
             list = accountService.myAccounts(userId);
             map.put(1,list);
-        }
-        catch (IllegalArgumentException e){
-            e.printStackTrace();
-            map.put(-2,list);
         }
         catch (Exception e){
             e.printStackTrace();
@@ -152,6 +162,7 @@ public class UserController {
     }
 
 
+    //해당 기록 자세히보기.
     @GetMapping("/myAccount/{email}/{id}")
     public Map<Integer,Account> accountDetail(@PathVariable(name = "email") String email,@PathVariable(value = "id") long id,Account account,
                                  @CookieValue(value = "token",required = false)Cookie cookie){
