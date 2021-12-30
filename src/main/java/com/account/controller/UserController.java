@@ -20,7 +20,8 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping(path = "/user",produces="application/json; charset=utf-8")
+@CrossOrigin
 public class UserController {
 
     private final UserService userService;
@@ -30,31 +31,10 @@ public class UserController {
     // 1:성공 -1:아디중복 -2:아디없음/비번틀림 -3그 밖의 에러  0 : 형식 틀림
 
 
-    //테스트용 토큰발급기
-    @PostMapping("/testApi")
-    @ResponseBody
-    public Map<String,String> test(@RequestBody LoginDto loginDto, HttpServletResponse response){
-        try{
-            User user = userService.getUserInfo(loginDto.getEmail());
-            String token = userService.createToken(user,loginDto);
-            Cookie cookie = new Cookie("token",token);
-            cookie.setPath("/");
-            cookie.setMaxAge(30*60);
-            response.addCookie(cookie);
-            Map<String, String> map = new HashMap<>();
-            map.put("token",token);
-            return map;
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            return null;
-        }
 
-    }
 
     //가입요청.  -email,password
     @PostMapping("/join")
-    @ResponseBody
     public int join(@RequestBody User user){
 
         try {
@@ -76,44 +56,48 @@ public class UserController {
 
     //로그인 요청.
     @PostMapping("/login")
-    @ResponseBody
-    public int login(@RequestBody LoginDto loginDto, User user, HttpServletResponse response){
+    public Map<Integer,String> login(@RequestBody LoginDto loginDto, User user, HttpServletResponse response){
+        Map<Integer,String> map=new HashMap<>();
         try{
-            if(!userService.checkUser(loginDto.getEmail())) return -2;
+            if(!userService.checkUser(loginDto.getEmail())) {
+                map.put(-2,"null");
+            }
+            System.out.println(loginDto);
             user = userService.getUserInfo(loginDto.getEmail());
             String token = userService.createToken(user,loginDto);
 
             Cookie cookie = new Cookie("token",token);
-            cookie.setPath("/");
             cookie.setMaxAge(30*60);
             response.addCookie(cookie);
-
-            return 1;
+            map.put(1,token);
+//            return 1;
         }
         catch (IllegalArgumentException e){
             e.printStackTrace();
-            return -2;
+            map.put(-2,null);
+//            return -2;
         }
         catch (Exception e){
             e.printStackTrace();
-            return -3;
+            map.put(-3,null);
+//            return -3;
         }
-
+        return map;
     }
 
     //로그아웃
     @GetMapping("/logout")
-    public String logout(@CookieValue(value = "token",required = false)Cookie cookie, HttpServletResponse response){
+    public int logout(@CookieValue(value = "token",required = false)Cookie cookie, HttpServletResponse response){
        try {
            Cookie cookie1 = new Cookie("token", "");
            cookie1.setMaxAge(0);
            response.addCookie(cookie1);
-           return "<script>alert("+"로그아웃"+")</script>";
+           return 1;
 
        }catch (Exception e){
            e.printStackTrace();
        }
-        return "<script>alert("+"실패."+")</script>";
+        return -1;
     }
 
 

@@ -2,8 +2,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/account_book?sueSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
     password: 12345678
-    username: root
-
+    username: sample
 
   jpa:
     properties:
@@ -13,3 +12,5 @@ spring:
 logging.level:
   org.hibernate.SQL: debug
   org.hibernate.type: trace
+server:
+  port: 8000

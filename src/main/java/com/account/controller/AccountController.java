@@ -84,7 +84,7 @@ public class AccountController {
 
 
     //영구삭제
-    @PostMapping("/RealDelete")
+    @PostMapping("/realDelete")
     @ResponseBody
     public int back(@RequestBody Account account,@CookieValue(value = "token",required = false) Cookie cookie){
         try{
